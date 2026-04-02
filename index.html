@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitFuel — Transform Your Body. Elevate Your Life.</title>
+  <meta name="description" content="FitFuel is your all-in-one fitness platform: calorie calculator, diet planner, workout plans and supplement store.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      padding: 80px 0 100px;
+      overflow: hidden;
+    }
+    .hero-glow-1 {
+      position: absolute; top: -10%; right: -5%;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: rgba(249,115,22,.08); filter: blur(100px);
+      pointer-events: none;
+    }
+    .hero-glow-2 {
+      position: absolute; bottom: -10%; left: -10%;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: rgba(59,130,246,.04); filter: blur(120px);
+      pointer-events: none;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .hero-tag { margin-bottom: 24px; }
+    .hero-h1 {
+      font-size: clamp(2.8rem, 6vw, 4.2rem);
+      font-weight: 900; line-height: 1.1;
+      letter-spacing: -.02em; margin-bottom: 20px;
+    }
+    .hero-sub {
+      font-size: 1.1rem; color: var(--muted);
+      margin-bottom: 32px; max-width: 460px; line-height: 1.75;
+    }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+    .hero-badges { display: flex; gap: 20px; align-items: center; }
+    .hero-badge-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .85rem; font-weight: 600; color: var(--muted);
+    }
+    .hero-badge-icon {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
+    }
+    .hero-img-col { position: relative; }
+    .hero-img-wrap {
+      position: relative;
+      width: 100%; aspect-ratio: 1/1;
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #fff;
+      box-shadow: var(--shadow-lg);
+      padding: 16px;
+    }
+    .hero-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover; border-radius: 20px;
+    }
+    .hero-float-card {
+      position: absolute; top: 32px; left: -28px;
+      background: #fff; padding: 14px 18px;
+      border-radius: 18px; border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      display: flex; align-items: center; gap: 12px;
+      animation: float 3s ease-in-out infinite;
+    }
+    .float-icon {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #dcfce7;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .float-label { font-size: .75rem; color: var(--muted); font-weight: 500; }
+    .float-value { font-weight: 800; font-size: 1rem; color: var(--fg); }
+
+    /* ── Features ── */
+    .features-section {
+      padding: 80px 0;
+      background: #f1f5f9;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .features-header { text-align: center; max-width: 600px; margin: 0 auto 56px; }
+    .features-header h2 { font-size: clamp(1.8rem,4vw,2.4rem); font-weight: 800; margin-bottom: 12px; }
+    .features-header p  { font-size: 1.05rem; color: var(--muted); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .feature-card {
+      background: #fff;
+      border-radius: var(--r-xl);
+      padding: 28px 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: var(--t);
+      display: flex; flex-direction: column;
+      cursor: pointer;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    .feature-icon-wrap {
+      width: 56px; height: 56px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 22px;
+      transition: transform .3s;
+    }
+    .feature-card:hover .feature-icon-wrap { transform: scale(1.12); }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; transition: color .2s; }
+    .feature-card:hover h3 { color: var(--primary); }
+    .feature-card p  { font-size: .875rem; color: var(--muted); line-height: 1.65; margin-bottom: 20px; flex: 1; }
+    .feature-link    { font-size: .85rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 4px; margin-top: auto; }
+    .feature-link .arrow { transition: transform .2s; }
+    .feature-card:hover .arrow { transform: translateX(4px); }
+
+    /* ── About ── */
+    .about-section { padding: 80px 0; }
+    .about-inner {
+      background: var(--fg);
+      border-radius: 40px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .about-inner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&q=40') center/cover;
+      opacity: .06;
+      mix-blend-mode: overlay;
+    }
+    .about-content {
+      position: relative; z-index: 1;
+      padding: 80px 60px;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+    }
+    .about-icon {
+      width: 68px; height: 68px;
+      background: rgba(249,115,22,.2);
+      border: 1.5px solid rgba(249,115,22,.3);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; margin-bottom: 28px;
+      backdrop-filter: blur(8px);
+    }
+    .about-content h2 {
+      color: #fff;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; max-width: 640px;
+      margin-bottom: 20px; line-height: 1.25;
+    }
+    .about-content p {
+      color: rgba(255,255,255,.65);
+      font-size: 1.05rem; max-width: 680px;
+      margin-bottom: 36px; line-height: 1.8;
+    }
+    .btn-about {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: var(--fg);
+      padding: 14px 32px; border-radius: var(--r-sm);
+      font-weight: 700; font-size: .95rem;
+      transition: var(--t);
+    }
+    .btn-about:hover { background: #f1f5f9; transform: translateY(-2px); }
+
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-img-col { display: none; }
+      .features-grid { grid-template-columns: repeat(2,1fr); }
+      .about-content { padding: 48px 28px; }
+    }
+    @media (max-width: 560px) {
+      .features-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-badge">FF</div>FitFuel
+    </a>
+    <div class="nav-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="calculator.html">Calculator</a>
+      <a href="diet.html">Diet</a>
+      <a href="workout.html">Workout</a>
+      <a href="store.html">Store</a>
+    </div>
+    <button class="nav-cart" onclick="location.href='store.html'" title="Cart">
+      🛒<span class="cart-count"></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+    <div class="container hero-inner">
+      <div class="fade-up fade-up-1">
+        <div class="section-tag hero-tag">🔥 Fuel your ambition</div>
+        <h1 class="hero-h1">
+          Transform your body.<br>
+          <span class="text-gradient">Elevate your life.</span>
+        </h1>
+        <p class="hero-sub">
+          FitFuel is your all-in-one solution for data-driven diets, structured workouts, calorie tracking, and premium supplements.
+        </p>
+        <div class="hero-cta">
+          <a href="calculator.html" class="btn btn-primary">Start Your Journey →</a>
+          <a href="store.html" class="btn btn-white">Shop Supplements</a>
+        </div>
+        <div class="hero-badges">
+          <div class="hero-badge-item">
+            <div class="hero-badge-icon" style="background:#dcfce7">🎯</div>
+            Data Driven
+          </div>
+          <div class="hero-badge-item">
+            <div class="hero-badge-icon" style="background:#dbeafe">⚡</div>
+            Fast Results
+          </div>
+        </div>
+      </div>
+      <div class="hero-img-col fade-up fade-up-2">
+        <div class="hero-img-wrap">
+          <img src="images/hero-abstract.png" alt="FitFuel Abstract Energy"
+               onerror="this.src='https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80'">
+        </div>
+        <div class="hero-float-card">
+          <div class="float-icon">🔥</div>
+          <div>
+            <div class="float-label">Daily Goal</div>
+            <div class="float-value">2,450 kcal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features-section">
+    <div class="container">
+      <div class="features-header fade-up fade-up-1">
+        <h2>Everything you need to succeed</h2>
+        <p>Stop guessing. We provide the tools, plans, and fuel you need to build your dream physique.</p>
+      </div>
+      <div class="features-grid">
+        <a href="calculator.html" class="feature-card fade-up fade-up-1">
+          <div class="feature-icon-wrap" style="background:#fff7ed">📊</div>
+          <h3>Calorie Calculator</h3>
+          <p>Find your exact maintenance, bulk, or cut macros scientifically using the Mifflin-St Jeor formula.</p>
+          <div class="feature-link">Explore feature <span class="arrow">›</span></div>
+        </a>
+        <a href="diet.html" class="feature-card fade-up fade-up-2">
+          <div class="feature-icon-wrap" style="background:#f0fdf4">🥗</div>
+          <h3>Diet Planner</h3>
+          <p>Customized 5-meal plans based on your dietary preferences, goal, and calorie target.</p>
+          <div class="feature-link">Explore feature <span class="arrow">›</span></div>
+        </a>
+        <a href="workout.html" class="feature-card fade-up fade-up-3">
+          <div class="feature-icon-wrap" style="background:#eff6ff">🏋️</div>
+          <h3>Workout Plans</h3>
+          <p>Structured science-backed routines from beginner to advanced. Full Body, PPL, Hypertrophy splits.</p>
+          <div class="feature-link">Explore feature <span class="arrow">›</span></div>
+        </a>
+        <a href="store.html" class="feature-card fade-up fade-up-4">
+          <div class="feature-icon-wrap" style="background:#faf5ff">💊</div>
+          <h3>Supplement Store</h3>
+          <p>Premium authenticated supplements delivered right to your door. Top brands, best prices.</p>
+          <div class="feature-link">Explore feature <span class="arrow">›</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about-section">
+    <div class="container">
+      <div class="about-inner">
+        <div class="about-content">
+          <div class="about-icon">🏋️</div>
+          <h2>Built for those who take fitness seriously.</h2>
+          <p>
+            FitFuel was created by fitness enthusiasts for fitness enthusiasts. We combined scientifically-backed calculators, structured expert routines, and a curated selection of premium supplements into one powerful platform. No fluff, just results.
+          </p>
+          <a href="calculator.html" class="btn-about">Calculate Your Macros Free →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <strong>FitFuel</strong> &copy; 2024 · Built for athletes, by athletes.
+</footer>
+
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>

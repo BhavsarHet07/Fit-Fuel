@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supplement Store — FitFuel</title>
+  <meta name="description" content="Shop premium whey, creatine, pre-workouts and peanut butter from top brands.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .store-page { padding-bottom: 80px; }
+
+    /* Filters */
+    .filter-row {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center; margin-bottom: 44px;
+    }
+    .filter-btn {
+      padding: 10px 24px; border-radius: 50px;
+      font-size: .875rem; font-weight: 600;
+      border: 2px solid var(--border);
+      background: #fff; color: var(--muted);
+      cursor: pointer; transition: var(--t);
+    }
+    .filter-btn:hover  { border-color: var(--primary); color: var(--primary); }
+    .filter-btn.active {
+      background: var(--fg); color: #fff;
+      border-color: var(--fg);
+      box-shadow: 0 4px 14px rgba(15,23,42,.2);
+    }
+
+    /* Grid */
+    #store-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    /* Card */
+    .product-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--r-xl); overflow: hidden;
+      box-shadow: var(--shadow-sm); transition: var(--t);
+      display: flex; flex-direction: column;
+    }
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+    .prod-img-wrap {
+      position: relative; aspect-ratio: 1/1;
+      overflow: hidden;
+    }
+    .prod-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover; transition: transform .5s;
+    }
+    .product-card:hover .prod-img-wrap img { transform: scale(1.07); }
+    .prod-brand-badge {
+      position: absolute; top: 10px; left: 10px; z-index: 1;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,.8);
+      font-size: .62rem; font-weight: 800;
+      padding: 3px 8px; border-radius: 6px;
+      text-transform: uppercase; letter-spacing: .04em;
+      color: var(--fg);
+    }
+    .prod-info { padding: 16px 18px 18px; flex: 1; display: flex; flex-direction: column; }
+    .prod-rating { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .rating-num { font-size: .82rem; font-weight: 700; }
+    .prod-name  { font-weight: 700; font-size: .95rem; line-height: 1.35; margin-bottom: 3px; }
+    .prod-cat   { font-size: .78rem; color: var(--muted); margin-bottom: 16px; }
+    .prod-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+    .prod-price  { font-size: 1.2rem; font-weight: 900; }
+    .btn-add {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: var(--primary-light); color: var(--primary);
+      border: none; font-size: 1rem;
+      cursor: pointer; transition: var(--t);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-add:hover { background: var(--primary); color: #fff; transform: scale(1.1); }
+
+    @media (max-width: 1100px) { #store-grid { grid-template-columns: repeat(3,1fr); } }
+    @media (max-width: 768px)  { #store-grid { grid-template-columns: repeat(2,1fr); gap: 16px; } }
+    @media (max-width: 440px)  { #store-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo"><div class="logo-badge">FF</div>FitFuel</a>
+    <div class="nav-toggle" onclick="this.nextElementSibling.classList.toggle('open')"><span></span><span></span><span></span></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="calculator.html">Calculator</a>
+      <a href="diet.html">Diet</a>
+      <a href="workout.html">Workout</a>
+      <a href="store.html" class="active">Store</a>
+    </div>
+    <button class="nav-cart" title="Cart">🛒<span class="cart-count"></span></button>
+  </div>
+</nav>
+
+<main class="store-page">
+  <div class="container">
+    <div class="page-header fade-up fade-up-1">
+      <h1>Supplement Store</h1>
+      <p>Premium, authenticated supplements to fuel your workouts and recovery.</p>
+    </div>
+
+    <div class="filter-row fade-up fade-up-2">
+      <button class="filter-btn active" data-category="All">All</button>
+      <button class="filter-btn" data-category="Protein">Protein</button>
+      <button class="filter-btn" data-category="Creatine">Creatine</button>
+      <button class="filter-btn" data-category="Pre-workout">Pre-workout</button>
+      <button class="filter-btn" data-category="Peanut Butter">Peanut Butter</button>
+    </div>
+
+    <div id="store-grid" class="fade-up fade-up-3"></div>
+  </div>
+</main>
+
+<footer><strong>FitFuel</strong> &copy; 2024 · All rights reserved.</footer>
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>

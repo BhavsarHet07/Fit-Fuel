@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diet Planner — FitFuel</title>
+  <meta name="description" content="Get a personalised 5-meal diet plan based on your goal, diet type and calorie target.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .diet-layout {
+      display: grid; grid-template-columns: 340px 1fr;
+      gap: 28px; padding-bottom: 80px; align-items: start;
+    }
+    .diet-sidebar {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 28px;
+      box-shadow: var(--shadow-sm);
+      position: sticky; top: 88px;
+    }
+    .diet-sidebar-title {
+      font-size: 1.05rem; font-weight: 800;
+      margin-bottom: 24px; display: flex; align-items: center; gap: 8px;
+    }
+    .diet-submit {
+      width: 100%; padding: 14px;
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, var(--primary), #f97316);
+      color: #fff; font-size: .95rem; font-weight: 700;
+      cursor: pointer; border: none;
+      box-shadow: 0 4px 14px rgba(249,115,22,.3); transition: var(--t);
+    }
+    .diet-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249,115,22,.4); }
+
+    /* Empty state */
+    .diet-empty {
+      min-height: 400px; border: 2px dashed var(--border);
+      border-radius: var(--r-lg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; color: var(--muted); text-align: center; padding: 24px;
+    }
+    .diet-empty-icon {
+      width: 80px; height: 80px; background: var(--primary-light);
+      border-radius: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin-bottom: 4px;
+    }
+    .diet-empty p:first-of-type { font-weight: 700; color: var(--fg); font-size: 1.05rem; }
+
+    /* Results */
+    #diet-results { display: none; }
+    .diet-summary-bar {
+      background: linear-gradient(135deg, var(--primary), #ea580c);
+      color: #fff; border-radius: var(--r-lg);
+      padding: 22px 28px;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 14px;
+      margin-bottom: 20px;
+    }
+    .diet-plan-tag { font-size: .8rem; opacity: .75; margin-bottom: 4px; }
+    .diet-kcal-big { font-size: 2rem; font-weight: 900; }
+    .diet-macro-row { display: flex; gap: 24px; }
+    .diet-macro-item span  { display: block; font-size: .72rem; opacity: .65; }
+    .diet-macro-item strong { font-size: 1.1rem; font-weight: 800; }
+
+    /* Meal cards */
+    .meal-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--r); margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05); overflow: hidden;
+    }
+    .meal-header {
+      display: flex; justify-content: space-between;
+      align-items: center; padding: 16px 20px;
+      cursor: pointer; user-select: none; transition: background .18s;
+    }
+    .meal-header:hover { background: var(--bg); }
+    .meal-left  { display: flex; align-items: center; gap: 14px; }
+    .meal-emoji {
+      width: 46px; height: 46px; background: var(--bg);
+      border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; font-size: 1.3rem; flex-shrink: 0;
+    }
+    .meal-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+    .meal-name { font-weight: 700; font-size: .95rem; }
+    .meal-time {
+      font-size: .7rem; background: var(--bg); border: 1px solid var(--border);
+      padding: 2px 8px; border-radius: 50px; color: var(--muted); font-weight: 500;
+    }
+    .meal-preview { font-size: .8rem; color: var(--muted); }
+    .meal-right  { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .meal-kcal   { font-size: 1.05rem; font-weight: 800; }
+    .meal-chevron { font-size: .7rem; color: var(--muted); transition: transform .25s; }
+    .meal-card.open .meal-chevron { transform: rotate(180deg); }
+    .meal-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height .3s ease;
+      border-top: 0 solid var(--border);
+    }
+    .meal-card.open .meal-body { max-height: 400px; border-top-width: 1px; }
+    .meal-items { padding: 14px 20px 0; }
+    .meal-items li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: .875rem; margin-bottom: 8px;
+    }
+    .meal-dot {
+      width: 6px; height: 6px; background: var(--primary);
+      border-radius: 50%; flex-shrink: 0; margin-top: 7px;
+    }
+    .meal-macros { padding: 12px 20px 16px; }
+
+    .diet-tip {
+      background: #fefce8; border: 1px solid #fef08a;
+      border-radius: var(--r-sm); padding: 14px 18px;
+      display: flex; gap: 10px; font-size: .83rem;
+      color: #713f12; line-height: 1.65; margin-top: 8px;
+    }
+
+    @media (max-width: 820px) {
+      .diet-layout { grid-template-columns: 1fr; }
+      .diet-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo"><div class="logo-badge">FF</div>FitFuel</a>
+    <div class="nav-toggle" onclick="this.nextElementSibling.classList.toggle('open')"><span></span><span></span><span></span></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="calculator.html">Calculator</a>
+      <a href="diet.html" class="active">Diet</a>
+      <a href="workout.html">Workout</a>
+      <a href="store.html">Store</a>
+    </div>
+    <button class="nav-cart" onclick="location.href='store.html'" title="Cart">🛒<span class="cart-count"></span></button>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="page-header fade-up fade-up-1">
+      <div class="section-tag">🍴 Smart Diet Planner</div>
+      <h1>Your Personalised Meal Plan</h1>
+      <p>Choose your goal, diet type and calorie target — get a complete 5-meal plan instantly.</p>
+    </div>
+
+    <div class="diet-layout">
+      <aside class="diet-sidebar fade-up fade-up-2">
+        <div class="diet-sidebar-title">🍴 Preferences</div>
+        <form id="diet-form">
+          <div class="form-group">
+            <label>Primary Goal</label>
+            <div class="radio-cards">
+              <label class="radio-card" data-goal="loss" onclick="selectGoal(this)">
+                <div class="radio-dot"></div>
+                <div class="radio-card-text">
+                  <strong>Weight Loss</strong>
+                  <span>Calorie deficit to shed fat while preserving muscle</span>
+                </div>
+              </label>
+              <label class="radio-card active" data-goal="maintenance" onclick="selectGoal(this)">
+                <div class="radio-dot"></div>
+                <div class="radio-card-text">
+                  <strong>Maintenance</strong>
+                  <span>Stay lean and fuelled — eat at your TDEE</span>
+                </div>
+              </label>
+              <label class="radio-card" data-goal="gain" onclick="selectGoal(this)">
+                <div class="radio-dot"></div>
+                <div class="radio-card-text">
+                  <strong>Muscle Gain</strong>
+                  <span>Calorie surplus to support muscle building</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:20px">
+            <label>Diet Type</label>
+            <div class="toggle-group">
+              <button type="button" class="toggle-btn active" data-diet="veg" onclick="selectDiet(this)">🥦 Vegetarian</button>
+              <button type="button" class="toggle-btn" data-diet="nonveg" onclick="selectDiet(this)">🍗 Non-Veg</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="target-kcal">Daily Calorie Target (kcal)</label>
+            <input type="number" id="target-kcal" class="form-control" value="2000" min="1000" max="5000" step="50" required>
+            <small style="color:var(--muted);font-size:.75rem;margin-top:4px;display:block">
+              Loss: 1400–1800 · Maintenance: 1800–2400 · Gain: 2500–3500
+            </small>
+          </div>
+          <button type="submit" class="diet-submit">Generate My Plan →</button>
+        </form>
+      </aside>
+
+      <div class="fade-up fade-up-3">
+        <div class="diet-empty" id="diet-empty">
+          <div class="diet-empty-icon">🍽</div>
+          <p>Ready to generate your plan</p>
+          <p style="font-size:.875rem">Set your preferences and click "Generate My Plan"</p>
+        </div>
+        <div id="diet-results"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer><strong>FitFuel</strong> &copy; 2024 · All rights reserved.</footer>
+<div id="toast"></div>
+<script src="script.js"></script>
+<script>
+  function selectGoal(el) {
+    document.querySelectorAll('.radio-card[data-goal]').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function selectDiet(btn) {
+    document.querySelectorAll('.toggle-btn[data-diet]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  document.getElementById('diet-form').addEventListener('submit', function() {
+    document.getElementById('diet-empty').style.display = 'none';
+  });
+</script>
+</body>
+</html>
